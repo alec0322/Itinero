@@ -1,9 +1,9 @@
-#How To Set UP
+# How To Set UP
 
-###Windows:
+### Windows:
 
 - ```myenv\Scripts\activate```
 
-###MacOS:
+### MacOS:
 
--``` source myenv/bin/activate```
+- ``` source myenv/bin/activate```
