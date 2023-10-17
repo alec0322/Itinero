@@ -6,4 +6,4 @@
 
 ### MacOS:
 
-- ``` source myenv/bin/activate```
+- ``` source myenv/Scripts/activate ```
