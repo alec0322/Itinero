@@ -1,7 +1,12 @@
 {
   "ExpandedNodes": [
     "",
-    "\\backend"
+    "\\backend",
+    "\\backend\\django",
+    "\\backend\\django\\itinero",
+    "\\backend\\django\\itinero\\users",
+    "\\backend\\django\\itinero\\users\\templates\\users"
   ],
+  "SelectedNode": "\\backend\\django\\itinero\\users\\urls.py",
   "PreviewInSolutionExplorer": false
 }

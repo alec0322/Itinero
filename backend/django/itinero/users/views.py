@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, authenticate
+from .models import Post
 
 def register(request):
     if request.method == 'POST':
@@ -15,7 +16,7 @@ def register(request):
             return redirect('home')  # Replace 'home' with your desired URL name
     else:
         form = UserCreationForm()
-    return render(request, 'Users/register.html', {'form': form})
+    return render(request, 'users/register.html', {'form': form})
 
 def login(request):
     if request.method == 'POST':
@@ -29,13 +30,19 @@ def login(request):
                 return redirect('home')  # Replace 'home' with your desired URL name
     else:
         form = AuthenticationForm()
-    return render(request, 'Users/login.html', {'form': form})
+    return render(request, 'users/login.html', {'form': form})
 
 def home(request):
-    # context = {
-    #     'posts': Post.objects.all()
-    # }
+    context = {
+        'posts': Post.objects.all()
+    }
     return render(request, 'users/home.html')
+
+def itinerary(request):
+    context = {
+        'posts': Post.objects.all()
+    }
+    return render(request, 'itinerary/home.html')
 
 
 def about(request):

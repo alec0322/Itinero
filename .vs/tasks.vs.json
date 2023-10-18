@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "tarea-__init__",
+      "appliesTo": "backend/django/itinero/users/__init__.py",
+      "type": "launch"
+    }
+  ]
+}
