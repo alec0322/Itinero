@@ -12,7 +12,7 @@ class CrimeClassifier:
     # which will contain the current state of the ML model
 
     def __init__(self):
-        self.model = BertForSequenceClassification.from_pretrained("bert-case-uncased", num_labels=2)
+        self.model = BertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2)
         self.tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
         self.best_val_accuracy = 0.0
 
