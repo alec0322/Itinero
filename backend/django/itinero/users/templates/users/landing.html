@@ -3,19 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Our Travel App</title>
+    <title>Your Itinerary</title>
 </head>
 <body>
-    <header class="header" style="background-color: #007bff; color: #fff; text-align: center; padding: 10px;">
-        <h1 class="header-title">Welcome to Our Travel App</h1>
-        <nav class="header-nav">
-            <ul class="nav-list">
-                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}" style="text-decoration: none; color: #fff;">Login</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'register' %}" style="text-decoration: none; color: #fff;">Register</a></li>
-            </ul>
-        </nav>
+    <header>
+        <h1>Your Itinerary</h1>
     </header>
-
+        
     <main class="main" style="text-align: center; margin-top: 20px;">
         <h2 class="main-heading" style="font-size: 20px;">Search for Your Next Adventure</h2>
         <form id="searchForm" class="search-form" action="itinerary" method="get" style="margin-top: 10px;">

@@ -6,9 +6,17 @@ Personal Travel Recommendation Model
 # To run the backend
 
 1. Activate the environment:
+
+    Windows:
     ```
     myenv\Scripts\activate
     ```
+
+    MacOS:
+    ```
+    source myenv/Scripts/activate 
+    ```
+
 
 2. Start the server:
     ```

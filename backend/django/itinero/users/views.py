@@ -32,18 +32,14 @@ def login(request):
         form = AuthenticationForm()
     return render(request, 'users/login.html', {'form': form})
 
-def home(request):
+def getStarted(request):
     context = {
         'posts': Post.objects.all()
     }
-    return render(request, 'users/home.html')
+    return render(request, 'users/getStarted.html')
 
-def itinerary(request):
+def landing(request):
     context = {
         'posts': Post.objects.all()
     }
-    return render(request, 'itinerary/home.html')
-
-
-def about(request):
-    return render(request, 'users/about.html', {'title': 'About'})
+    return render(request, 'users/landing.html') 
