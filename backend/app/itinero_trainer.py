@@ -1,10 +1,9 @@
-import torch
 from itinero_model import CrimeClassifier
 from news_data_fetcher import NewsAPI
-from transformers import BertForSequenceClassification, BertTokenizer, AdamW, get_linear_schedule_with_warmup
+from transformers import get_linear_schedule_with_warmup
 
 #---------------------------------------------------------------------------------------------
-# 1) Preprocess and split the data into training, validation, and testing sets
+# 1) Preprocess the articles and split them into training, validation, and testing sets
 #---------------------------------------------------------------------------------------------
 
 # Initialize the fine-tuned Bert classifier
@@ -37,20 +36,33 @@ val_loader = crime_classifier.create_dataloader(val_data, batch_size=batch_size,
 test_loader = crime_classifier.create_dataloader(test_data, batch_size=batch_size, shuffle=False)
 
 #---------------------------------------------------------------------------------------------
-# 3) Implement training loop with validation
+# 3) Evaluate the accuracy of the current model, if any
 #---------------------------------------------------------------------------------------------
 
-# Initialize the BERT model and optimizer
-model = crime_classifier.model
-optimizer = AdamW(model.parameters(), lr=2e-5, no_deprecation_warning=True)
-scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=len(train_loader))
+model_path = crime_classifier.model_path
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# If there is a model path defined, evaluate its accuracy for comparisons during training
+if model_path:
+    crime_classifier.load_model(model_path)
+    best_val_accuracy = crime_classifier.evaluate_model(val_loader)
+    print(f"The current model has an accuracy of {best_val_accuracy:.2f}%")
+else:
+    best_val_accuracy = 0.0
+
+#---------------------------------------------------------------------------------------------
+# 4) Implement training loop with validation
+#---------------------------------------------------------------------------------------------
+
+# Make CrimeClassifer attributes accessible during runtime
+model = crime_classifier.model
+optimizer = crime_classifier.optimizer
+scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=len(train_loader))
+device = crime_classifier.device
+
+# Transfer the model's parameters and operations to the specifed device
 model.to(device)
 
-epochs = 3
-best_val_accuracy = 0.0
-best_model = None
+epochs = int(input("Enter the number of epochs: "))
 
 for epoch in range(epochs):
     model.train()
@@ -65,50 +77,30 @@ for epoch in range(epochs):
         optimizer.step()
         scheduler.step()
     
-    model.eval()
-    val_total = 0
-    val_correct = 0
-    with torch.no_grad():
-        for val_batch in val_loader:
-            input_ids, masks, labels = val_batch
-            input_ids, masks, labels = input_ids.to(device), masks.to(device), labels.to(device)
-
-            outputs = model(input_ids, attention_mask=masks)
-            _, predicted = torch.max(outputs.logits, 1)
-            val_total += labels.size(0)
-            val_correct += (predicted == labels).sum().item()
-    
-    val_accuracy = 100 * val_correct / val_total
+    val_accuracy = crime_classifier.evaluate_model(val_loader)
 
     print(f"Epoch {epoch + 1} - Validation Accuracy: {val_accuracy:.2f}%")
 
+    # Overwrite the model's state if a higher accuracy is found
     if val_accuracy > best_val_accuracy:
+        print("Higher accuracy found, overwriting model path...")
         best_val_accuracy = val_accuracy
-        best_model = model.state_dict()
-    
-if best_model:
-    torch.save(best_model, "./itinero/backend/app/best_model_state.pth")
+
+        if model_path:
+            print(f"Writing to file: {model_path}")
+            crime_classifier.save_model(model_path)
+        else:
+            print(f"No model path found, creating .pth file")
+            model_path = "./itinero/backend/app/best_model_state.pth"
+            crime_classifier.save_model(model_path)
 
 #---------------------------------------------------------------------------------------------
-# 4) Testing/deployment
+# 5) Potential testing/deployment code
 #---------------------------------------------------------------------------------------------
 
 # Use the best model available for testing or deployment
+crime_classifier.load_model(model_path)
 
-model.load_state_dict(torch.load("./itinero/backend/app/best_model_state.pth"))
-model.eval()
+test_accuracy = crime_classifier.evaluate_model(test_loader)
 
-test_total = 0
-test_correct = 0
-with torch.no_grad():
-    for test_batch in test_loader:
-        input_ids, masks, labels = test_batch
-        input_ids, masks, labels = input_ids.to(device), masks.to(device), labels.to(device)
-
-        outputs = model(input_ids, attention_mask=masks)
-        _, predicted = torch.max(outputs.logits, 1)
-        test_total += labels.size(0)
-        test_correct += (predicted == labels).sum().item()
-
-test_accuracy = 100 * test_correct / test_total
 print(f"Test Accuracy: {test_accuracy:.2f}%")
