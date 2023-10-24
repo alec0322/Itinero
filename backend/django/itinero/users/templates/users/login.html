@@ -1,5 +1,38 @@
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-</form>
+<html>
+<head>
+  <title>Login</title>
+  <style>
+    body {
+      text-align: center;
+    }
+
+    form {
+      width: 50%;
+      margin: 0 auto;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    input[type="password"] {
+      border-radius: 5px;
+      -webkit-text-security: disc;
+    }
+
+   
+    
+  </style>
+</head>
+<body>
+  <h1>Login</h1>
+
+  <form action="#">
+    <input type="text" name="email" placeholder="Email">
+    <input type="password" name="password" placeholder="Password">
+    <input type="submit" value="Submit">
+  </form>
+</body>
+</html>
