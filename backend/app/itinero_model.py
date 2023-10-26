@@ -120,29 +120,22 @@ class CrimeClassifier:
 
     # Function to classify whether articles in a given set are crime-related or not
     def classify_articles(self, article_titles):
-        processed_data = self.preprocess_articles(article_titles)
-
-        batch_size = 32
-        article_loader = self.create_dataloader(processed_data, batch_size=batch_size, shuffle=False, )
         
-        self.load_model(self.model_path)
-        self.model.to(self.device)
-        self.model.eval()
+        classified_articles = {"Crime-related": [], "Not crime-related": []}
 
-        crime_related_articles = []
+        for title in article_titles:
+            # Tokenize the given article title
+            input_ids = self.tokenizer.encode(title, add_special_tokens=True)
 
-        with torch.no_grad():
-            for batch in article_loader:
-                input_ids = batch["input_ids"].to(self.device)
-                masks = batch["attention_mask"].to(self.device)
-                article_titles = batch["article_title"].to(self.device)
-
-                outputs = self.model(input_ids, masks)
+            with torch.no_grad():
+                input_ids = torch.tensor(input_ids).unsqueeze(0)
+                outputs = self.model(input_ids)
                 probabilities = torch.softmax(outputs.logits, dim=1)
-                predicted_classes = torch.argmax(probabilities, dim=1)
+                predicted_class = torch.argmax(probabilities, dim=1).item()
             
-                for i, predicted_class in enumerate(predicted_classes):
-                    if predicted_class == 1:
-                        crime_related_articles.append(article_titles[i])
-
-        return crime_related_articles
+            if predicted_class == 1:
+                classified_articles["Crime-related"].append(title)
+            else:
+                classified_articles["Not crime-related"].append(title)
+        
+        return classified_articles
