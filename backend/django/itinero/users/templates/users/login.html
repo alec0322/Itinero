@@ -33,6 +33,9 @@
     {% csrf_token %}
     <input type="text" name="email" placeholder="Email">
     <input type="password" name="password" placeholder="Password">
+    {% if error_message %}
+      <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
     <input type="submit" value="Submit">
   </form>
 </body>

@@ -31,20 +31,21 @@
       <label for="first_name">First Name:</label>
       <input type="text" id="first_name" name="first_name" required>
 
-
       <label for="last_name">Last Name:</label>
       <input type="text" id="last_name" name="last_name" required>
     </div>
 
-
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" required>
-
 
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required>
 
-<br>
+    {% if error_message %}
+      <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
+    <br>
     <input type="submit" value="Submit">
   </form>
 </body>

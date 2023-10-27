@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import authenticate
-from django.http import HttpResponse
-from .models import Post, User
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password, make_password
+from django.urls import reverse
+from .models import Post, User
 
 
 def register(request):
@@ -16,7 +16,8 @@ def register(request):
 
         # Check if a user with the given email already exists
         if User.objects.filter(email=email).exists():
-            return HttpResponse("Email already exists. Please use a different email.")
+            error_message = "Email already exists. Please use a different email."
+            return render(request, 'users/register.html', {'error_message': error_message, 'email': email, 'first_name': first_name, 'last_name': last_name})
 
         # Create a new User object and save it
         user = User(
@@ -39,22 +40,26 @@ def login(request):
         password = request.POST.get('password')
 
         user = None
-        
+        error_message = None
+
         try:
             user = User.objects.get(email=email)
             if check_password(password, user.password):
                 # Authentication successful
-                return HttpResponse("User Logged In successfully.")
+                # Redirect to the landing page
+                return HttpResponseRedirect(reverse('landing'))
             else:
                 # Incorrect password
-                return HttpResponse("Incorrect password.")
+                error_message = "Incorrect password."
         except User.DoesNotExist:
             # User does not exist
-            return HttpResponse("User does not exist.")
+            error_message = "User does not exist."
 
+        # Render the login template with the error message
+        return render(request, 'users/login.html', {'error_message': error_message})
 
     else:
-        # Render the login template
+        # Render the login template without an error message
         return render(request, 'users/login.html')
 
 
