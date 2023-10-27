@@ -1,36 +1,58 @@
-
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import login, authenticate
-from .models import Post
+from django.contrib.auth import authenticate
+from django.http import HttpResponse
+from .models import Post, User
+from django.contrib.auth.hashers import check_password, make_password
+
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')  # Replace 'home' with your desired URL name
+        # Get data from the form
+        password = make_password(request.POST['password'])
+        email = request.POST['email']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+
+        # Create a new User object and save it
+        user = User(
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name
+        )
+        user.save()
+
+        # You can add additional logic here, e.g., redirect to a login page
+        return HttpResponse("User registered successfully.")
     else:
-        form = UserCreationForm()
-    return render(request, 'users/register.html', {'form': form})
+        # Render the registration form
+        return render(request, 'users/register.html')
 
 def login(request):
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home')  # Replace 'home' with your desired URL name
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        user = None
+        
+        try:
+            user = User.objects.get(email=email)
+            if check_password(password, user.password):
+                # Authentication successful
+                return HttpResponse("User Logged In successfully.")
+            else:
+                # Incorrect password
+                return HttpResponse("Incorrect password.")
+        except User.DoesNotExist:
+            # User does not exist
+            return HttpResponse("User does not exist.")
+
+
     else:
-        form = AuthenticationForm()
-    return render(request, 'users/login.html', {'form': form})
+        # Render the login template
+        return render(request, 'users/login.html')
+
 
 def getStarted(request):
     context = {
@@ -42,4 +64,4 @@ def landing(request):
     context = {
         'posts': Post.objects.all()
     }
-    return render(request, 'users/landing.html') 
+    return render(request, 'users/landing.html')
