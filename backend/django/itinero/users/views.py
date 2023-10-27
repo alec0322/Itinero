@@ -6,6 +6,8 @@ from django.urls import reverse
 from .models import Post, User
 
 
+from django.contrib import messages
+
 def register(request):
     if request.method == 'POST':
         # Get data from the form
@@ -28,11 +30,16 @@ def register(request):
         )
         user.save()
 
-        # You can add additional logic here, e.g., redirect to a login page
-        return HttpResponse("User registered successfully.")
+        # Add a success message
+        messages.success(request, "Congratulations! You've registered successfully! Login now to begin creating your itinerary.")
+
+        # Redirect to the homepage
+        return redirect('getStarted')  # Replace 'homepage' with the name of your homepage URL pattern
+
     else:
         # Render the registration form
         return render(request, 'users/register.html')
+
 
 def login(request):
     if request.method == 'POST':
