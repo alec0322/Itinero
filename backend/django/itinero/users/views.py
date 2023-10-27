@@ -14,6 +14,10 @@ def register(request):
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
 
+        # Check if a user with the given email already exists
+        if User.objects.filter(email=email).exists():
+            return HttpResponse("Email already exists. Please use a different email.")
+
         # Create a new User object and save it
         user = User(
             email=email,
