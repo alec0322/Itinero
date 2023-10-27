@@ -1,11 +1,12 @@
+<!DOCTYPE html>
 <html>
 <head>
   <title>Login</title>
   <style>
     body {
       text-align: center;
-      background-color:cadetblue;
-      background-size:cover
+      background-color: cadetblue;
+      background-size: cover;
     }
 
     form {
@@ -13,23 +14,23 @@
       margin: 0 auto;
     }
 
-    input[type="text"], input[type="password"] {
+    input[type="text"],
+    input[type="password"] {
       width: 100%;
       padding: 10px;
       margin-bottom: 10px;
     }
 
     .header-title {
-                font-family: 'Kanit', sans-serif;
-                font-size: 75px;
-            }
+      font-family: 'Kanit', sans-serif;
+      font-size: 75px;
+    }
   </style>
 </head>
 <body>
-  <h1 class="header-title" style= "color: #ffffff; text-align: center; padding: 10px;">Login</h1>
-    <form method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-  <form action="#">
+  <h1 class="header-title" style="color: #ffffff; text-align: center; padding: 10px;">Login</h1>
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
     <input type="text" name="email" placeholder="Email">
     <input type="password" name="password" placeholder="Password">
     <input type="submit" value="Submit">

@@ -76,10 +76,10 @@ WSGI_APPLICATION = 'itinero.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'itinero_db',
         'USER': 'postgres',
-        'PASSWORD': '',
+        'PASSWORD': '1264803',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -122,9 +122,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
-# Disable automatic appending of slashes
-APPEND_SLASH = False
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
