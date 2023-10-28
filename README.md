@@ -14,7 +14,7 @@ https://www.postgresql.org/download/
 ### Step 2: Follow the installation prompts
 
 - Keep the default install directory
-- Uncheck *StackBuilder* from "Select Components".
+- **Uncheck *StackBuilder* from "Select Components".**
 - Keep default Data Directory.
 - Set superuser password - *Remember It*
 - Keep default port (5432).
