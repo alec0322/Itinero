@@ -9,42 +9,30 @@ Personal Travel Recommendation Model
 
 - Visit the official PostgreSQL website & download the installer appropriate for your operating system:
 https://www.postgresql.org/download/
-- Follow the installation instructions provided by the installer.
-- *When prompted to install and setup stack build; check the box to skip.*
-
-### Step 2: Start the PostgreSQL Service
-
-- After installation, start the PostgreSQL service.
-- Start the pgAdmin4 client
-
-### Step 3: Access the PostgreSQL Command Line
-
-- Use the following command to access the PostgreSQL command line:
-
-```bash
-psql -U postgres
-```
-
-### Step 4: Create a New User (if necessary)
-
-- Use the following SQL command to create a new user:
-
-```
-sqlCopy code
-CREATE USER myuser WITH PASSWORD 'mypassword';
-```
-
-Replace 'myuser' with your desired username and 'mypassword' with your preferred password.
-
-### Step 5: Create a New Database
-
-- Use the following SQL command to create a new database:
-
-```
-CREATE DATABASE itinero_db;
-```
 
 
+### Step 2: Follow the installation prompts
+
+- Keep the default install directory
+- Uncheck *StackBuilder* from "Select Components".
+- Keep default Data Directory.
+- Set superuser password - *Remember It*
+- Keep default port (5432).
+- Keep Default Locale - Language option
+
+### Step 3: Start PgAdmin4
+
+- Open *Servers* drop down menu.
+- Enter password from installation when prompted;
+
+
+### Step 4: Create new local database
+
+- Right click on the "Database" in the dropdown menu.
+- Select create -> Database...
+- Name database: itinero_db
+- Save
+- Double check database is initialized correctly by going back to the dropdown menue and selelcting the newly created database.
 
 
 
@@ -53,28 +41,37 @@ CREATE DATABASE itinero_db;
 ### Step 1: Install Python and pip
 
 Make sure you have Python and pip installed on your system.
+This project works with Python 3.11.6+ and shoiuld by default already come with pip installed.
 
-### Step 2: Create a Virtual Environment
+### Step 2: Clone this repository and CD to the folder
 
-```bash
-python3 -m venv myenv
-source myenv/bin/activate  # for Linux/MacOS
-myenv\Scripts\activate  # for Windows
-```
 
 ### Step 3: Install Django and psycopg2-binary
 
 ```
 pip install django psycopg2-binary
 ```
-
-### Step 4: Move To Bacakend Directory
+### Step 4: Edit the Setting.py file
+-In backend/django/itinero directory edit the line in Settings.py file and add your password to the field.
+```
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', 'itinero_db'),
+        'USER': os.environ.get('DB_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
+    }
+}
+```
+### Step 5: Move To Bacakend Directory
 
 ```
 cd backend/django/itinero
 ```
 
-### Step 7: Migrate and Run the Server
+### Step 6: Migrate and Run the Server
 
 ```
 python manage.py makemigrations
@@ -82,36 +79,9 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Now your Django project is set up with a PostgreSQL database. You can access the development server at `http://127.0.0.1:8000/`.
+## Now your Django project is set up with a PostgreSQL database. You can access the development server at `http://127.0.0.1:8000/`.
 
-### Step 8: Deactivate the Virtual Environment
-
-```
-deactivate
-```
-
-
-# To run the backend
-
-1. Activate the environment:
-
-    Windows:
-    ```
-    myenv\Scripts\activate
-    ```
-
-    MacOS:
-    ```
-    source myenv/Scripts/activate 
-    ```
-
-
-2. Start the server:
-    ```
-    python manage.py runserver
-    ```
-
-3. Access the URLs in your web browser:
+### Access the URLs in your web browser:
    - Login: [http://127.0.0.1:8000/login](http://127.0.0.1:8000/login)
    - Register: [http://127.0.0.1:8000/register](http://127.0.0.1:8000/register)
 
