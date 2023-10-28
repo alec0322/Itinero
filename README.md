@@ -23,16 +23,16 @@ https://www.postgresql.org/download/
 ### Step 3: Start PgAdmin4
 
 - Open *Servers* drop down menu.
-- Enter password from installation when prompted;
+- Enter the password from installation when prompted.
 
 
-### Step 4: Create new local database
+### Step 4: Create a new local database
 
-- Right click on the "Database" in the dropdown menu.
-- Select create -> Database...
+- Right-click on the "Database" in the dropdown menu.
+- Select Create -> Database...
 - Name database: itinero_db
 - Save
-- Double check database is initialized correctly by going back to the dropdown menue and selelcting the newly created database.
+- Double check database is initialized correctly by going back to the dropdown menu and selecting the newly created database.
 
 
 
@@ -40,8 +40,8 @@ https://www.postgresql.org/download/
 
 ### Step 1: Install Python and pip
 
-Make sure you have Python and pip installed on your system.
-This project works with Python 3.11.6+ and shoiuld by default already come with pip installed.
+Make sure you have Python and Pip installed on your system.
+This project works with Python 3.11.6+ and should by default already come with pip installed.
 
 ### Step 2: Clone this repository and CD to the folder
 
@@ -52,7 +52,7 @@ This project works with Python 3.11.6+ and shoiuld by default already come with 
 pip install django psycopg2-binary
 ```
 ### Step 4: Edit the Setting.py file
--In backend/django/itinero directory edit the line in Settings.py file and add your password to the field.
+-In backend/django/itinero directory edit the line in the Settings.py file and add your password to the field.
 ```
 DATABASES = {
     'default': {
@@ -65,7 +65,7 @@ DATABASES = {
     }
 }
 ```
-### Step 5: Move To Bacakend Directory
+### Step 5: Move To Backend Directory
 
 ```
 cd backend/django/itinero
