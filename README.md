@@ -7,10 +7,10 @@ Personal Travel Recommendation Model
 
 ### Step 1: Download and Install PostgreSQL
 
-- Visit the official PostgreSQL website.
-- Download the installer appropriate for your operating system.
+- Visit the official PostgreSQL website & download the installer appropriate for your operating system:
+https://www.postgresql.org/download/
 - Follow the installation instructions provided by the installer.
-- When prompted to install and setup stack build; check the box to skip.
+- *When prompted to install and setup stack build; check the box to skip.*
 
 ### Step 2: Start the PostgreSQL Service
 
