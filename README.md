@@ -52,7 +52,7 @@ This project works with Python 3.11.6+ and should by default already come with p
 pip install django psycopg2-binary
 ```
 ### Step 4: Edit the Setting.py file
--In backend/django/itinero directory edit the line in the Settings.py file and add your password to the field.
+- In backend/django/itinero directory edit the database line in the Settings.py file and add your password to the field.
 ```
 DATABASES = {
     'default': {
