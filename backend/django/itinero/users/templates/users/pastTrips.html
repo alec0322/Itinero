@@ -1,0 +1,47 @@
+<html>
+<head>
+  <title>Past Trips</title>
+  <style>
+    body {
+      text-align: center;
+    }
+    h1 {
+      font-size: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Past Trips</h1>
+
+  <table class="past-trips-table">
+    <thead>
+      <tr>
+        <th scope="col">Destination</th>
+        <th scope="col">Start Date</th>
+        <th scope="col">End Date</th>
+        <th scope="col">Total Cost</th>
+        <th scope="col">Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for trip in trips %}
+        <tr>
+          <td scope="row">{{ trip.destination }}</td>
+          <td>{{ trip.start_date }}</td>
+          <td>{{ trip.end_date }}</td>
+          <td>${{ trip.total_cost }}</td>
+          <td>{{ trip.rating }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
