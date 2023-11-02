@@ -1,47 +1,43 @@
 <html>
 <head>
-  <title>Past Trips</title>
+  <title>My Past Trips</title>
   <style>
-    body {
+    #past-itineraries {
       text-align: center;
     }
+
+    #past-itineraries button {
+      display: block;
+      margin: 10px auto;
+    }
+    body{
+      background-color:cadetblue;
+            background-size:cover
+    }
+
     h1 {
-      font-size: 30px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      border: 1px solid black;
-      padding: 5px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>Past Trips</h1>
 
-  <table class="past-trips-table">
-    <thead>
-      <tr>
-        <th scope="col">Destination</th>
-        <th scope="col">Start Date</th>
-        <th scope="col">End Date</th>
-        <th scope="col">Total Cost</th>
-        <th scope="col">Rating</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for trip in trips %}
-        <tr>
-          <td scope="row">{{ trip.destination }}</td>
-          <td>{{ trip.start_date }}</td>
-          <td>{{ trip.end_date }}</td>
-          <td>${{ trip.total_cost }}</td>
-          <td>{{ trip.rating }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<h1>My Past Trips</h1>
+
+<div id="past-itineraries">
+
+  <button type="button" onclick="showItinerary('Miami')">Miami, FL </button>
+  <button type="button" onclick="showItinerary('Tampa')">Tampa, FL</button>
+  <button type="button" onclick="showItinerary('Orlando')">Orlando, FL</button>
+
+</div>
+
+<script>
+  function showItinerary(city) {
+    // This function will show the full itinerary for the given city.
+    // You can implement this function however you want.
+  }
+</script>
+
 </body>
 </html>
