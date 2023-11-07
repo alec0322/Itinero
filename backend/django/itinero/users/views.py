@@ -81,3 +81,9 @@ def landing(request):
         'posts': Post.objects.all()
     }
     return render(request, 'users/landing.html')
+
+def pastTrips(request):
+    context = {
+        'posts': Post.objects.all()
+    }
+    return render(request, 'users/pastTrips.html')

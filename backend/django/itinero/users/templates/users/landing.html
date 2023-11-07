@@ -77,6 +77,31 @@
             text-align: center;
             color: #ffffff; /* these are your existing styles */
         }
+
+        .button {
+            background-color: purple;
+            border: none;
+            border-radius: 10px;
+            color: orange;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            margin: 10px 2px;
+            cursor: pointer;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* This will center the button horizontally */
+            align-items: center;
+            position: fixed;
+            bottom: 20px;
+            left: 0; /* Added to help center the container */
+            right: 0; /* Added to help center the container */
+            z-index: 1000; /* Ensure it's above other elements */
+        }
     </style>
 </head>
 <body>
@@ -85,6 +110,11 @@
     <div class="search-container">
         <input style="text-align: center;" type="text" id="cityInput" placeholder="Search for a city" oninput="populateCityList()">
         <ul id="cityList"></ul> <!-- This is where the search results will be appended -->
+    </div>
+    <div class="button-container">
+        <a href="/pastTrips">
+            <button class="button">My Trips</button>
+        </a>
     </div>
 
     <script>

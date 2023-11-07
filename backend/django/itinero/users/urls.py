@@ -6,6 +6,7 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('landing/', views.landing, name='landing'),
     path('', views.getStarted, name='getStarted'),
+    path('pastTrips/', views.pastTrips, name='pastTrips'),
 
     # other paths
 ]
