@@ -91,12 +91,12 @@ python manage.py runserver
 
 ### Step 1: Download Git LFS
 
-The path file containing the current model state of the 'CrimeClassifier' feature of Itinero is too large to add to the repository.
+The path file containing the current model state of the 'CrimeClassifier' feature is too large to add to the repository.
 Therefore, it is necessary to download Git Large File Storage (LFS) from:
-https://git-lfs.com/
+https://git-lfs.com/.
 This Git extension will be automatically added to your native 'git' path on your PC.
 
-### Step 2: Fetching the 'best_crime_classifier_state.pth' file
+### Step 2: Fetching the 'best_crime_classifier.pth' file
 
 Once you have pulled the most recent code into your repo, with Git LFS installed, go to your repo's terminal/console and run:
 
