@@ -5,7 +5,7 @@ class NewsAPI:
 
     # NewsAPI Constructor
     def __init__(self):
-        self.api_key = "1f2e3aff9ef144a99d66c1dd6bf3a6b7" #Insert API Key
+        self.api_key = " " #Insert API Key
         self.base_url = 'https://newsapi.org/v2/'
 
     def make_api_request(self, endpoint):
