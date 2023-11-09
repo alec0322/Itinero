@@ -1,6 +1,7 @@
 import torch
 import os
 import random
+from news_data_fetcher import NewsAPI
 from torch.utils.data import DataLoader, TensorDataset
 from transformers import BertForSequenceClassification, BertTokenizer, AdamW
 
@@ -12,25 +13,38 @@ class CrimeClassifier:
     # which will contain the current state of the ML model
 
     def __init__(self):
-        self.model = BertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2)
-        self.tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-        self.optimizer = AdamW(self.model.parameters(), lr=23-5, no_deprecation_warning=True)
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # Establish API connection
+        self.news_api = NewsAPI()
 
-        # Check if there is a model state i n the current directory
-        if os.path.exists("./itinero/backend/app/best_model_state.pth"):
-            self.model_path = "./itinero/backend/app/best_model_state.pth"
+        # Define device to be used
+        self.device = torch.device("cpu")
+
+        # Initialize pre-trained Bert Sequence Classification model
+        self.model = BertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2).to(self.device) # type: ignore
+
+        # Initialize Bert Tokenizer
+        self.tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+
+        # Initialize AdamW optimizer
+        self.optimizer = AdamW(self.model.parameters(), lr=23-5, no_deprecation_warning=True)
+
+        # Check if there is a model state in the current directory
+        if os.path.exists("./backend/app/best_crime_classifier_state.pth"):
+            self.model_path = "./backend/app/best_crime_classifier_state.pth"
         else:
             self.model_path = None
-       
+    
+    # Function to save model state to current directory
     def save_model(self, model_path):
         torch.save(self.model.state_dict(), model_path)
 
+    # Function to load model state from current directory
     def load_model(self, model_path):
         self.model.load_state_dict(torch.load(model_path))
 
     # Function to preprocess and format articles
     def preprocess_articles(self, articles, label=None):
+
         processed_data = []
 
         for title in articles:
@@ -99,11 +113,13 @@ class CrimeClassifier:
         
     # Function to calculate the model's accuracy depending on a given dataloader
     def evaluate_model(self, dataloader):
-        self.model.to(self.device)
+
+        self.model.to(self.device) # type: ignore
         self.model.eval()
 
         total_predictions = 0
         correct_predictions = 0
+        
         with torch.no_grad():
             for batch in dataloader:
                 input_ids, masks, labels = batch
@@ -120,7 +136,7 @@ class CrimeClassifier:
 
     # Function to classify whether articles in a given set are crime-related or not
     def classify_articles(self, article_titles):
-        
+
         classified_articles = {"Crime-related": [], "Not crime-related": []}
 
         for title in article_titles:
@@ -139,3 +155,20 @@ class CrimeClassifier:
                 classified_articles["Not crime-related"].append(title)
         
         return classified_articles
+    
+    # Function to calculate the 'crime index' of a given city
+    def calculate_crime_index(self, city):
+
+        city_articles = self.news_api.get_city_articles(city)
+
+        classified_city_articles = self.classify_articles(city_articles)
+
+        print(classified_city_articles)
+
+        crime_related = len(classified_city_articles["Crime-related"])
+        not_crime_related = len(classified_city_articles["Not crime-related"])
+
+        crime_index = crime_related / (crime_related + not_crime_related)
+
+        return crime_index
+    

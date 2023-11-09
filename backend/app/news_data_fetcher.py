@@ -3,9 +3,9 @@ import datetime
 
 class NewsAPI:
 
-    #NewsAPI Constructor
-    def __init__(self, api_key):
-        self.api_key = api_key
+    # NewsAPI Constructor
+    def __init__(self):
+        self.api_key = "1f2e3aff9ef144a99d66c1dd6bf3a6b7" #Insert API Key
         self.base_url = 'https://newsapi.org/v2/'
 
     def make_api_request(self, endpoint):
@@ -17,13 +17,13 @@ class NewsAPI:
             print(f"Error making API request: {e}")
             return None
 
-    #Returns <= 100 articles over the last month related to 'city'
+    # Returns <= 100 articles over the last month related to 'city'
     def get_city_articles(self, city, max_articles=100):   
 
-        #Calculate the date from a month ago
+        # Calculate the date from a month ago
         current_date = datetime.date.today()
         one_month_ago = current_date - datetime.timedelta(days=30)
-        one_month_ago = one_month_ago.strftime("%Y-%m-%d") #Change it to YYYY-MM-DD format
+        one_month_ago = one_month_ago.strftime("%Y-%m-%d") # Change it to YYYY-MM-DD format
 
         params = (
             f'q=+{city}&'
@@ -36,12 +36,15 @@ class NewsAPI:
 
         city_articles = []
 
-        for article in data["articles"][:max_articles]:
-            city_articles.append(article["title"])
+        if data:
+            for article in data["articles"][:max_articles]:
+                city_articles.append(article["title"])
+        else:
+            print("Error fetching data from the API.")
 
         return city_articles
     
-    #Returns <= 250 crime-related articles over the last month
+    # Returns <= 250 crime-related articles over the last month
     def get_crime_articles(self, max_articles=250):
 
         params = (
@@ -54,12 +57,15 @@ class NewsAPI:
 
         crime_articles = []
 
-        for article in data["articles"][:max_articles]:
-            crime_articles.append(article["title"])
+        if data:
+            for article in data["articles"][:max_articles]:
+                crime_articles.append(article["title"])
+        else:
+            print("Error fetching data from the API.")
 
         return crime_articles
     
-    #Returns <= 250 non-crime-related articles over the last month
+    # Returns <= 250 non-crime-related articles over the last month
     def get_non_crime_articles(self, max_articles=250):
 
         params = (
@@ -72,7 +78,10 @@ class NewsAPI:
 
         non_crime_articles = []
 
-        for article in data["articles"][:max_articles]:
-            non_crime_articles.append(article["title"])
+        if data:
+            for article in data["articles"][:max_articles]:
+                non_crime_articles.append(article["title"])
+        else:
+            print("Error fetching the data from the API.")
 
         return non_crime_articles

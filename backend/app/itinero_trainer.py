@@ -1,5 +1,4 @@
 from itinero_model import CrimeClassifier
-from news_data_fetcher import NewsAPI
 from transformers import get_linear_schedule_with_warmup
 
 #---------------------------------------------------------------------------------------------
@@ -10,7 +9,7 @@ from transformers import get_linear_schedule_with_warmup
 crime_classifier = CrimeClassifier()
 
 # Establish API connection
-news_api = NewsAPI()
+news_api = crime_classifier.news_api
 
 # Gather crime-related articles and preprocess
 crime_articles = news_api.get_crime_articles(max_articles=500)
@@ -59,9 +58,6 @@ optimizer = crime_classifier.optimizer
 scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=len(train_loader))
 device = crime_classifier.device
 
-# Transfer the model's parameters and operations to the specifed device
-model.to(device)
-
 epochs = int(input("Enter the number of epochs: "))
 
 for epoch in range(epochs):
@@ -91,7 +87,7 @@ for epoch in range(epochs):
             crime_classifier.save_model(model_path)
         else:
             print(f"No model path found, creating .pth file")
-            model_path = "./itinero/backend/app/best_model_state.pth"
+            model_path = "./backend/app/best_crime_classifier_state.pth"
             crime_classifier.save_model(model_path)
 
 #---------------------------------------------------------------------------------------------
