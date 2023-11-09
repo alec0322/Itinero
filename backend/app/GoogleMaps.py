@@ -1,10 +1,11 @@
+from unittest import result
 from urllib import response
 import googlemaps
 import requests
 import sys
 import json
 
-API_KEY = 'AIzaSyAwNPEp6NIjh_sIXhUbVnsZq34R28mrjPs'
+API_KEY = ''
 
 map_client = googlemaps.Client(API_KEY)
 
@@ -29,14 +30,13 @@ def getCordsFromAddress(input):
 
 
 # getNearbyPlaces('33028', 'ramen', 'Resturant', 10000)
-def getNearbyPlaces(inputlocation, searchForType, searchForFilter, distanceInMeters):
+def getNearbyPlaces(inputlocation, searchForFilter, searchForType, distanceInMeters):
     location = getCordsFromAddress(inputlocation)
-    print(location)
     searchFilter = searchForFilter
     distanceInMeters = distanceInMeters
 
 
-    response = map_client.places_nearby(
+    response = map_client.places_nearby( # type: ignore
         location = location,
         keyword = searchFilter,
         type = searchForType,
@@ -54,15 +54,17 @@ def getPlaceReviews(placeID):
     endpoint = f"{base_url}place_id={placeID}&key={API_KEY}"
 
     response = requests.get(endpoint)
+    reviewList = response.json()['result']
 
-    reviewList = response.json()['result']['reviews']
-    return reviewList
+    if "reviews" in reviewList:
+        return reviewList['reviews']
+    return "None"
     
     # for i, buisness in enumerate(reviewList):
     #     print(reviewList[i]['rating'])
     #     print(reviewList[i]['text'])
 
-
+#Use this one with an actual location
 def getLocationMap(location):
     base_url = "https://maps.googleapis.com/maps/embed/v1/view"
 
@@ -71,5 +73,16 @@ def getLocationMap(location):
     endpoint = f"{base_url}?key={API_KEY}&center={str(cords[0])}, {str(cords[1])}"
 
     response = requests.get(endpoint)
-    print(response.text)
+    return response
 
+
+##Use this one with a place id
+def getPlacenMap(location):
+    base_url = "https://maps.googleapis.com/maps/embed/v1/view"
+
+    cords = getCordsFromAddress(location)
+
+    endpoint = f"{base_url}?key={API_KEY}&q={location}"
+
+    response = requests.get(endpoint)
+    return response
