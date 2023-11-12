@@ -4,10 +4,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password, make_password
 from django.urls import reverse
 from django.utils import timezone
-from .models import Post, User, Trips, City, State
-
-
+from django.http import JsonResponse
+from .models import Post, User
+from trips.models import Trips, City, State
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 
 def register(request):
     if request.method == 'POST':
@@ -55,7 +56,7 @@ def login(request):
             if check_password(password, user.password):
                 # Authentication successful
                 # Redirect to the landing page
-                request.session['user_id'] = user.id 
+                request.session['user_id'] = user.id  # type: ignore
                 return HttpResponseRedirect(reverse('landing'))
             else:
                 # Incorrect password
@@ -85,18 +86,18 @@ def landing(request):
 
         # Your existing code to handle landing page when a user is logged in
         if request.method == 'POST':
-            #state_name = request.POST.get('state_query')
-            #city_name = request.POST.get('city')
             cityState = request.POST.get('cityStateInput')
             start_date = request.POST.get('start_date')
             end_date = request.POST.get('end_date')
 
-            # Split the string into city and state using the comma as a delimiter
-            city_name, state_name = map(str.strip, cityState.split(','))
+            try:
+                # Split the string into city and state using the comma as a delimiter
+                city_name, state_name = map(str.strip, cityState.split(','))
+            except ValueError:
+                return render(request, 'users/landing.html', {'error_message': 'Please Fill Out All Fields'})
 
             # Convert city and state to lowercase
             city_name = city_name.lower()
-
 
             try:
                 # Retrieve the state and city from the database
@@ -112,12 +113,16 @@ def landing(request):
                     lastDay=end_date,
                 )
 
-                trip.save()
+                try:
+                    trip.save()
+                except ValidationError:
+                    return render(request, 'users/landing.html', {'error_message': 'Invalid date format. Please enter a date in the format YYYY-MM-DD.'})
 
                 return render(request, 'users/itinerary.html', {'trip': trip})
 
             except (State.DoesNotExist, City.DoesNotExist):
-                return HttpResponse("City not found in the database.")
+                return render(request, 'users/landing.html', {'error_message': 'City not found in the database.'})
+
         else:
             # Render the landing page with the form
             return render(request, 'users/landing.html')
@@ -125,7 +130,6 @@ def landing(request):
     else:
         # Handle the case when the user is not logged in (not in session)
         return render(request, 'users/login.html', {'error_message': 'Please log in to start.'})
-
 
 def myTrips(request):
     # Check if a user is logged in by checking if their ID is in the session
