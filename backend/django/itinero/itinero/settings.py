@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'django_extensions',
-    'trips'
+    'trips',
+    'ml_models',
 ]
 
 MIDDLEWARE = [

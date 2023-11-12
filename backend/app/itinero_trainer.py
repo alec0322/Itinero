@@ -1,4 +1,4 @@
-from itinero_model import CrimeClassifier
+from backend.django.itinero.trips.scripts.itinero_model import CrimeClassifier
 from transformers import get_linear_schedule_with_warmup
 
 #---------------------------------------------------------------------------------------------

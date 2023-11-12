@@ -14,7 +14,6 @@ class City(models.Model):
     def __str__(self):
         return f"{self.name}, {self.state}"
 
-
 class Trips(models.Model):
     TYPE_CHOICES = (
         ('upcoming', 'Upcoming'),
@@ -36,6 +35,19 @@ class Itinerary(models.Model):
     hotel = models.CharField(max_length=50)
 
 class Location(models.Model):
+    TIME_SLOT_CHOICES = (
+        ('breakfast', 'Breakfast'),
+        ('mid_day', 'Mid-Day Activity'),
+        ('lunch', 'Lunch'),
+        ('evening', 'Evening Activity'),
+        ('dinner', 'Dinner'),
+    )
+
     name = models.CharField(max_length=100)
     itinerary = models.ForeignKey(Itinerary, on_delete=models.CASCADE)
     time = models.TimeField()
+    time_slot = models.CharField(max_length=50, choices=TIME_SLOT_CHOICES)
+    activity = models.CharField(max_length=50)
+    search_keyword = models.CharField(max_length=50)
+    place = models.CharField(max_length=200)  # or models.ForeignKey(Place, on_delete=models.CASCADE)
+    places = models.TextField()  # or models.ManyToManyField(Place)

@@ -1,7 +1,7 @@
 import torch
 import os
 import random
-from news_data_fetcher import NewsAPI
+from backend.django.itinero.trips.scripts.news_data_fetcher import NewsAPI
 from torch.utils.data import DataLoader, TensorDataset
 from transformers import BertForSequenceClassification, BertTokenizer, AdamW
 

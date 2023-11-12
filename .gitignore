@@ -2,3 +2,5 @@
 __pycache__/
 backend/django/itinero/itinero/__pycache__/
 backend/venv
+venv
+backend/venv/
