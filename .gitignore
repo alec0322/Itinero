@@ -1,3 +1,4 @@
 .DS_Store
 __pycache__/
 backend/django/itinero/itinero/__pycache__/
+backend/venv
