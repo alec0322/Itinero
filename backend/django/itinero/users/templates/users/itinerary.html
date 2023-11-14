@@ -112,7 +112,6 @@
     </style>
 </head>
 <body>
-
     <nav align="center">
         <ul>
             <li><a href="/landing">Home</a></li>
@@ -123,81 +122,83 @@
 
     <div class="itinerary-container">
         <div class="itinerary-details">
-            <h1>Itinerary for {{trip.city.name}}, {{trip.city.state.name}}</h1>
+            <h1>Itinerary for {{ itin.trip.city.name }}, {{ itin.trip.city.state.name }}</h1>
             <ul>
-                <li>Start Date:          {{ trip.firstDay }}</li>
-                <li>End Date:            {{ trip.lastDay }}</li>
+                <li>Start Date: {{ itin.trip.firstDay }}</li>
+                <li>End Date: {{ itin.trip.lastDay }}</li>
                 <br>
-                <li>Hotel:               InterContinental Miami </li>
+                <li>Hotel: {{ itin.itinerary.hotel }}</li>
             </ul>
         </div>
-        <div class="itinerary-day">
-            <div class="day-box">
-                <h2 id="day-title"></h2>
 
-                <!-- Itinerary details for Day 1 -->
+        <div class="itinerary-day" id="day-container">
+            <div class="day-box">
+                <h2 id="day-title">Day 1 - {{ itin.location.0.get_time_slot_display }}</h2>
                 <ul>
-                    <li>9am - Breakfast at Cafe Bastille Downtown</li>
-                    <br>
-                    <li>11am - Perez Art Museum Miami</li>
-                    <br>
-                    <li>2:30pm - Lunch at Naked Farmer</li>
-                    <br>
-                    <li>4:30pm - Walk n' Shop at Wynwood</li>
-                    <br>
-                    <li>8:30pm - Dinner at Crazy About You</li>
-                    <br>
-                    <!-- Add more activities here -->
+                    {% for activity in itin.location.0.activity_set.all %}
+                        <li>{{ activity.time }} - {{ activity.activity }} at {{ activity.place }}</li>
+                    {% endfor %}
                 </ul>
-                <div class="itinerary-navigation">
-                    <button class="itinerary-button" id="previous-day">Previous Day</button>
-                    <button class="itinerary-button" id="next-day">Next Day</button>
-                </div>
             </div>
         </div>
-        <br>
+
+        <div class="itinerary-navigation">
+            <button class="itinerary-button" id="previous-day">Previous Day</button>
+            <button class="itinerary-button" id="next-day">Next Day</button>
+        </div>
     </div>
 
     <script>
-        // JavaScript code
         document.addEventListener("DOMContentLoaded", function () {
-            // Get the "Previous Day" and "Next Day" buttons
             const previousDayButton = document.getElementById("previous-day");
             const nextDayButton = document.getElementById("next-day");
-
-            // Set the initial day (Day 1)
+            const dayContainer = document.getElementById("day-container");
+    
             let currentDay = 1;
-            let currentDate = new Date("{{ trip.firstDay }}");
+            let currentDate = new Date("{{ itin.trip.firstDay }}");
+            const lastDay = new Date("{{ itin.trip.lastDay }}");
+    
             document.querySelector("#day-title").textContent = `Day ${currentDay} - ${currentDate.toDateString()}`;
-
-            //first day so you can not click on previous day, only next
-            document.getElementById("previous-day").disabled = true;
-            document.getElementById("next-day").disabled = false;
-
-            // Event listener for "Previous Day" button
+    
             previousDayButton.addEventListener("click", function () {
-                document.getElementById("next-day").disabled = false;
-                currentDate.setDate(currentDate.getDate() - 1); // Actualiza la fecha antes de usarla
-                currentDay--;
-                document.querySelector("#day-title").textContent = `Day ${currentDay} - ${currentDate.toDateString()}`;
-                if (currentDate.getTime() === new Date("{{ trip.firstDay }}").getTime()) {
-                    document.getElementById("previous-day").disabled = true;
+                if (currentDay > 1 && currentDate > new Date("{{ itin.trip.firstDay }}")) {
+                    currentDate.setDate(currentDate.getDate() - 1);
+                    currentDay--;
+                    showDay(currentDay);
                 }
             });
-
-            // Event listener for "Next Day" button
+    
             nextDayButton.addEventListener("click", function () {
-                document.getElementById("previous-day").disabled = false;
-                currentDate.setDate(currentDate.getDate() + 1); // Actualiza la fecha antes de usarla
-                currentDay++;
-                document.querySelector("#day-title").textContent = `Day ${currentDay} - ${currentDate.toDateString()}`;
-                if (currentDate.getTime() === new Date("{{ trip.lastDay }}").getTime()) {
-                    document.getElementById("next-day").disabled = true;
+                if (currentDay < itin.location.length && currentDate < lastDay) {
+                    currentDate.setDate(currentDate.getDate() + 1);
+                    currentDay++;
+                    showDay(currentDay);
                 }
             });
+    
+            function showDay(day) {
+                document.querySelector("#day-title").textContent = `Day ${day} - ${currentDate.toDateString()}`;
+                dayContainer.innerHTML = `
+                    <div class="day-box">
+                        <h2 id="day-title">Day ${day} - ${itin.location[day - 1].get_time_slot_display()}</h2>
+                        <ul>
+                            ${itin.location[day - 1].activity_set.all().map(activity => `
+                                <li>${activity.time} - ${activity.activity} at ${activity.place}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+    
+                previousDayButton.disabled = currentDay === 1 || currentDate <= new Date("{{ itin.trip.firstDay }}");
+                nextDayButton.disabled = currentDay === itin.location.length || currentDate >= lastDay;
+            }
+    
+            showDay(currentDay);
         });
     </script>
-
+    
+    
+    
 </body>
 </html>
 

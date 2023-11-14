@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import User
+import json
 
 class State(models.Model):
     name = models.CharField(max_length=50)
@@ -31,23 +32,35 @@ class Trips(models.Model):
 
 class Itinerary(models.Model):
     trip = models.ForeignKey(Trips, on_delete=models.CASCADE)
-    date = models.DateField()
-    hotel = models.CharField(max_length=50)
+    hotel_list = models.TextField()
+    hotel = models.CharField(max_length=250) #need to change to only hold the index of the list of places
+    
+    def set_hotel_list(self, hotel_list):
+        self.hotel_list = json.dumps(hotel_list)
+
+    def get_hotel_list(self):
+        return json.loads(self.hotel_list)
 
 class Location(models.Model):
     TIME_SLOT_CHOICES = (
-        ('breakfast', 'Breakfast'),
-        ('mid_day', 'Mid-Day Activity'),
-        ('lunch', 'Lunch'),
-        ('evening', 'Evening Activity'),
-        ('dinner', 'Dinner'),
+        (1, 'Breakfast'),
+        (2, 'Mid-Day Activity'),
+        (3, 'Lunch'),
+        (4, 'Evening Activity'),
+        (5, 'Dinner'),
     )
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=150)
     itinerary = models.ForeignKey(Itinerary, on_delete=models.CASCADE)
-    time = models.TimeField()
+    date = models.DateField()
     time_slot = models.CharField(max_length=50, choices=TIME_SLOT_CHOICES)
-    activity = models.CharField(max_length=50)
-    search_keyword = models.CharField(max_length=50)
+    activity = models.CharField(max_length=100)
+    search_keyword = models.CharField(max_length=150, default='')
     place = models.CharField(max_length=200)  # or models.ForeignKey(Place, on_delete=models.CASCADE)
-    places = models.TextField()  # or models.ManyToManyField(Place)
+    place_list = models.TextField()  # or models.ManyToManyField(Place)
+    
+    def set_places(self, place_list):
+        self.place_list = json.dumps(place_list)
+
+    def get_places(self):
+        return json.loads(self.place_list)
