@@ -4,6 +4,31 @@ Personal Travel Recommendation Model
 [Figma Wireframe](https://www.figma.com/team_invite/redeem/mGhBfs7l41S3IAZCViwB4f)
 ### Setting Up Virtual Environment and Installing Requirements
 
+#### **For Windows:**
+
+1. **Open Command Prompt:**
+    - Press `Win + R`, type "cmd", and press `Enter` to open the Command Prompt.
+
+2. **Create Virtual Environment:**
+    ```bash
+    python -m venv venv
+    ```
+
+3. **Activate Virtual Environment:**
+    ```bash
+    .\venv\Scripts\activate
+    ```
+
+4. **Install Requirements:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5. **Deactivate Virtual Environment:**
+    ```bash
+    deactivate
+    ```
+    
 #### **For macOS:**
 
 1. **Open Terminal:**
@@ -30,31 +55,6 @@ Personal Travel Recommendation Model
     deactivate
     ```
 
-#### **For Windows:**
-
-1. **Open Command Prompt:**
-    - Press `Win + R`, type "cmd", and press `Enter` to open the Command Prompt.
-
-2. **Create Virtual Environment:**
-    ```bash
-    python -m venv venv
-    ```
-
-3. **Activate Virtual Environment:**
-    ```bash
-    .\venv\Scripts\activate
-    ```
-
-4. **Install Requirements:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-5. **Deactivate Virtual Environment:**
-    ```bash
-    deactivate
-    ```
-
 ### Notes:
 
 - Replace `python3` with `python` if your default Python version is Python 3 on macOS.
@@ -62,7 +62,27 @@ Personal Travel Recommendation Model
 - The `requirements.txt` file should contain a list of your project dependencies.
 - The `activate` and `deactivate` commands are used to activate and deactivate the virtual environment, respectively.
 
-Now you have a virtual environment set up, activated, installed requirements, and deactivated as needed. Remember to activate the virtual environment each time you work on your project, and deactivate it when you're done. This helps isolate project dependencies and avoids conflicts with other projects.
+### Populating Database with Cities and States
+
+#### **Step 1: Set Up Database Connection**
+
+- Ensure your PostgreSQL database is created and running.
+
+#### **Step 2: Run the Python Script**
+
+- Locate the existing Python script: `backend/app/popuST.py`.
+
+- Open a terminal or command prompt.
+
+- Navigate to the script's directory.
+
+- Run the script:
+
+  ```bash
+  python popuST.py
+  
+
+# Setting up PostgreSQL Database
 
 ### Step 1: Download and Install PostgreSQL
 
