@@ -2,8 +2,67 @@
 Personal Travel Recommendation Model
 
 [Figma Wireframe](https://www.figma.com/team_invite/redeem/mGhBfs7l41S3IAZCViwB4f)
+### Setting Up Virtual Environment and Installing Requirements
 
-# Setting up PostgreSQL Database
+#### **For macOS:**
+
+1. **Open Terminal:**
+    - Press `Cmd + Space` to open Spotlight Search.
+    - Type "Terminal" and press `Enter` to open the terminal.
+
+2. **Create Virtual Environment:**
+    ```bash
+    python3 -m venv venv
+    ```
+
+3. **Activate Virtual Environment:**
+    ```bash
+    source venv/bin/activate
+    ```
+
+4. **Install Requirements:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5. **Deactivate Virtual Environment:**
+    ```bash
+    deactivate
+    ```
+
+#### **For Windows:**
+
+1. **Open Command Prompt:**
+    - Press `Win + R`, type "cmd", and press `Enter` to open the Command Prompt.
+
+2. **Create Virtual Environment:**
+    ```bash
+    python -m venv venv
+    ```
+
+3. **Activate Virtual Environment:**
+    ```bash
+    .\venv\Scripts\activate
+    ```
+
+4. **Install Requirements:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5. **Deactivate Virtual Environment:**
+    ```bash
+    deactivate
+    ```
+
+### Notes:
+
+- Replace `python3` with `python` if your default Python version is Python 3 on macOS.
+- `venv` is the name of the virtual environment folder. You can use a different name if you prefer.
+- The `requirements.txt` file should contain a list of your project dependencies.
+- The `activate` and `deactivate` commands are used to activate and deactivate the virtual environment, respectively.
+
+Now you have a virtual environment set up, activated, installed requirements, and deactivated as needed. Remember to activate the virtual environment each time you work on your project, and deactivate it when you're done. This helps isolate project dependencies and avoids conflicts with other projects.
 
 ### Step 1: Download and Install PostgreSQL
 
