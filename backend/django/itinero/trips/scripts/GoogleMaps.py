@@ -5,7 +5,7 @@ import requests
 import sys
 import json
 
-API_KEY = 'AIzaSyDRkF9I_QhlP3uuipCZsxKcbd0NniUG7Zo'
+API_KEY = ''
 
 map_client = googlemaps.Client(API_KEY)
 
