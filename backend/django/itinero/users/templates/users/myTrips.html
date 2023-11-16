@@ -3,24 +3,73 @@
 <head>
     <!-- Your head content here -->
     <style>
-        .trips-container {
+        body {
+            background-color: cadetblue;
+            background-size: cover;
+            font-family: 'Kanit', sans-serif;
+            color: #ffffff;
+        }
+        h1 {
+            text-align: center;
+        }
+
+        .header-title {
+            font-family: 'Kanit', sans-serif;
+            font-size: 75px;
+        }
+
+        .itinerary-container {
             display: flex;
             justify-content: space-between;
         }
 
+        .submit-button {
+            background: #bb7f85;
+            background: linear gradient(top, #bb7f85 0%, #e47b5b 100%);
+            background: -moz-linear-gradient(top, #e47b5b 0%, #bb7f85 100%);
+            background: -webkit-linear-gradient(top, #e47b5b 0%, #bb7f85 100%);
+            box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.15);
+            padding: 20px; /* How wide the button is */
+            border-radius: 30px; /* How round the border is */
+            display: inline-block;
+            width: 45%;
+            margin: 5px;
+            padding: 10px;
+            position: relative;
+            display: inline-table;
+            border: transparent;
+            color: #ffffff; /* Text color */
+            font-size: 14px; /* Font size */
+            font-family: 'Kanit', sans-serif;
+        }
+        .trips-container {
+            display: flex;
+            justify-content: center;
+        }
+
         .trip-list {
             width: 45%;
+            align-items: center; /* Center the items vertically */
+            text-align: center; /* Center the text horizontally */
+            margin: 0 auto; /* Center the container itself */
+        }
+        .trip-list ul {
+            list-style: none; /* Remove bullet points */
+            padding: 0; /* Remove default padding */
         }
 
         .trip-button {
-            background-color: #007BFF;
-            color: #fff;
+            background-color: #395f60;
+            color: white;
             border: none;
-            border-radius: 5px;
-            padding: 10px;
+            border-radius: 10px;
+            padding: 10px 20px;
             margin: 5px;
             cursor: pointer;
+            font-family: 'Kanit', sans-serif;
+            display: inline-block;
         }
+
 
         nav ul ul {
             display: none;

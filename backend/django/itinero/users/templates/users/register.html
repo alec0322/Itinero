@@ -3,25 +3,53 @@
   <title>Create an Account</title>
   <style>
     body {
-      text-align: center;
-      background-color:cadetblue;
-      background-size:cover
+        text-align: center;
+        background-color: cadetblue;
+        background-size: cover;
     }
 
     form {
-      display: inline-block;
-      margin: 0 auto;
+        width: 50%;
+        margin: 0 auto;
     }
 
-    input {
-      margin: 10px;
+    .class1 {
+        background-color: purple;
+        border: none;
+        border-radius: 10px;
+        color: orange;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 18px;
+        margin: 10px 2px;
+        cursor: pointer;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        padding: 12px 20px; /* Adjust the padding to increase the input's height and make it look more substantial */
+        display: block; /* Makes it easier to style and position */
+        border: 1px solid #ccc; /* Gives a light border */
+        border-radius: 4px; /* Rounds the corners of the input box */
+        box-sizing: border-box; /* Makes sure padding doesn't affect the overall width */
+        font-size: 16px; /* Increases the font size for better readability */
+        background-color: white; /* Gives a background color */
+        color: #555; /* Sets the text color */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optionally adds a subtle shadow to lift the input off the page */
+        transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition for focus effect */
     }
 
     .header-title {
-                font-family: 'Kanit', sans-serif;
-                font-size: 75px;
-            }
-  </style>
+        font-family: 'Kanit', sans-serif;
+        font-size: 75px;
+    }
+</style>
 </head>
 <body>
   <h1 class="header-title" style= "color: #ffffff; text-align: center; padding: 10px;">Create your account</h1>

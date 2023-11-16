@@ -8,12 +8,12 @@ from django.http import JsonResponse
 from .models import Post, User
 from trips.models import Trips, City, State, Location, Itinerary
 from trips.scripts.place_recommender import *
+from trips.scripts.itinero_model import CrimeClassifier
 from trips.views import recommend_view
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 import random
 from datetime import datetime, timedelta
-
 
 def register(request):
     if request.method == 'POST':
@@ -109,6 +109,8 @@ def landing(request):
                 state = State.objects.get(name=state_name)
                 city = City.objects.get(name=city_name, state=state)
 
+                crime_classifier = CrimeClassifier()
+                crime_index = crime_classifier.calculate_crime_index(city)
                 # Create a new Trips object
                 trip = Trips(
                     typeOfTrip='upcoming',
@@ -116,6 +118,7 @@ def landing(request):
                     user=user,
                     firstDay=start_date,
                     lastDay=end_date,
+                    crimeIndex=crime_index
                 )
 
                 try:
@@ -124,59 +127,30 @@ def landing(request):
                     # # Get the ID of the saved trip
                     # trip_id = trip.id
 
-                    places = recommendPlace(str(city), "hotel", '8000')
-                    if places:
-                        rand = random.randrange(10)
-                        hotel_place = places[rand]
+                    hotel_list = recommendPlace(str(city), "hotel", '8000', 1)
+                    if hotel_list:
+                        # rand = random.choice(places)
+                        hotel_place = random.choice(hotel_list)
 
                     # Create a new Itinerary object
                     itinerary = Itinerary(
-                        hotel=hotel_place,  # selected hotel
+                        hotel=hotel_place["name"],  # selected hotel
                         trip_id=trip.id
                     )
-                    itinerary.set_hotel_list(places)
+                    itinerary.set_hotel_list(hotel_list)
                     
                     # Save the Itinerary object to the database
                     itinerary.save()
                     
-                    # Convert date strings to datetime.date objects
-                    start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
-                    end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
-
-                    # Calculate the number of days between start_date and end_date
-                    day_count = (end_date - start_date).days + 1
-                    event_list = {
-                        1: "Breakfast",
-                        2: "Midday Activity",
-                        3: "Lunch",
-                        4: "Evening Activity",
-                        5: "Dinner"
-                    }
-                    
-                    for i in range(day_count):
-                        for x in range(1, 6):
-                            places = recommendPlace(str(city), event_list.get(x), '8000')
-                            place = random.choice(places)
-                            date = start_date + timedelta(days=i)   #instead of time this really means day :/
-                            time_slot = x
-                            activity = event_list.get(x) 
-                            search_keyword = ''
-                            
-                            location = Location(
-                            name=place['name'],                 # name of place
-                            itinerary=itinerary,             # itinerary id
-                            date=date,                          # date of trip
-                            time_slot=time_slot,                # 1 of 5 events of day used for ordering
-                            activity=activity,                  # Default secondary search keyword
-                            search_keyword=search_keyword,      # Primary search keyword
-                            place=place,               # Place selected
-                        )
-                            location.set_places(places)             # Saving places list to json for future callbacks
-                            location.save()
+                    itinerary_builder(start_date, end_date, city, trip, itinerary)
 
           
                 except ValidationError:
                     return render(request, 'users/landing.html', {'error_message': 'Invalid date format. Please enter a date in the format YYYY-MM-DD.'})
+
+                trip = get_object_or_404(Trips, pk=trip.id)
+                itinerary = Itinerary.objects.get(trip=trip)
+                location = Location.objects.filter(itinerary__trip=trip)
 
                 # Pass to the template
                 itin = {
@@ -184,8 +158,9 @@ def landing(request):
                     'itinerary': itinerary,
                     'location': location,
                 }
-                    
+
                 return render(request, 'users/itinerary.html', itin)
+
 
             except (State.DoesNotExist, City.DoesNotExist):
                 return render(request, 'users/landing.html', {'error_message': 'City not found in the database.'})
@@ -225,7 +200,7 @@ def myTrips(request):
                 # Redirect to the itinerary view with the selected trip's ID
                 #return redirect('itinerary', trip_id=trip_id)
                 trip = get_object_or_404(Trips, pk=trip_id)
-                itinerary = Itinerary.objects.filter(trip=trip)
+                itinerary = Itinerary.objects.get(trip=trip)
                 location = Location.objects.filter(itinerary__trip=trip)
                 
                 itin = {
@@ -234,7 +209,7 @@ def myTrips(request):
                     'location': location,
                 }
                 # print(itin)  # Add this line to check the data in the console
-                return render(request, 'users/itinerary.html', {'itin': itin})
+                return render(request, 'users/itinerary.html', itin)
         else:
             return render(request, 'users/myTrips.html', context)
     else:
@@ -242,3 +217,68 @@ def myTrips(request):
         return render(request, 'users/login.html', {'error_message': 'Please log in to view your trips.'})
      
 
+def itinerary_builder(start_date, end_date, city, trip, itinerary):
+    # Convert date strings to datetime.date objects
+    start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+    end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+
+    # Calculate the number of days between start_date and end_date
+    day_count = (end_date - start_date).days + 1
+    event_list = {
+        1: "Breakfast",
+        2: "Midday Activity",
+        3: "Lunch",
+        4: "Evening Activity",
+        5: "Dinner"
+    }
+
+    # Generate lists for each activity before the loop
+    breakfast_locations = recommendPlace(str(city), "Breakfast", '8000', day_count)
+    midday_activity_locations = recommendPlace(str(city), "Day Activity", '8000', day_count)
+    lunch_locations = recommendPlace(str(city), "Lunch", '8000', day_count)
+    evening_activity_locations = recommendPlace(str(city), "Evening Activity", '8000', day_count)
+    dinner_locations = recommendPlace(str(city), "Dinner", '8000', day_count)
+    
+    # Loop through each day and assign locations
+    for i in range(day_count):
+        for x in range(1, 6):
+            # Assign locations based on the pre-generated lists
+            if x == 1:
+                location_list = breakfast_locations
+            elif x == 2:
+                location_list = midday_activity_locations
+            elif x == 3:
+                location_list = lunch_locations
+            elif x == 4:
+                location_list = evening_activity_locations
+            elif x == 5:
+                location_list = dinner_locations
+            
+            try:
+                # Choose a random location from the list
+                location_selected = random.choice(location_list)
+            except IndexError:
+                print(f"Warning: {event_list[x]} locations are empty for day {i + 1}")
+
+                
+                location_selected = {'name': 'No Location Available', 'address': 'N/A', 'review_score': 0.0, 'average_rating': 0.0}
+
+
+            date = start_date + timedelta(days=i)
+            time_slot = x
+            activity = event_list.get(x)
+            search_keyword = ''
+
+            location = Location(
+                name=location_selected['name'],
+                address=location_selected['address'],
+                rating =location_selected['review_score'],
+                itinerary=itinerary,
+                date=date,
+                time_slot=time_slot,
+                activity=activity,
+                search_keyword=search_keyword,
+                place=location_selected,
+            )
+            location.set_places(location_list)
+            location.save()

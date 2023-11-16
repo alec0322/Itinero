@@ -10,6 +10,7 @@
         body {
             background-color: cadetblue;
             background-size: cover;
+            font-family: 'Kanit', sans-serif;
         }
 
         .header-title {
@@ -80,20 +81,6 @@
             color: #ffffff; /* these are your existing styles */
         }
 
-        .button {
-            background-color: purple;
-            border: none;
-            border-radius: 10px;
-            color: orange;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 18px;
-            margin: 10px 2px;
-            cursor: pointer;
-        }
-
         .button-container {
             display: flex;
             flex-direction: column;
@@ -118,35 +105,32 @@
             text-align: center;
         }
 
-        /* Center the submit button */
-        .submit-button-container {
-            text-align: center; /* Center the content inside this container */
-            margin-top: 20px; /* Add some space above the submit button */
-        }
-
         .submit-button {
-            padding: 10px 20px; /* Add some padding around the text in the button */
-            font-size: 16px; /* Set the font size for the text inside the button */
+            background-color: purple;
+            border: none;
+            border-radius: 10px;
+            color: orange;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            margin: 10px 2px;
+            cursor: pointer;
         }
 
         .form-container {
             display: flex; /* Establish flex context for child elements */
             justify-content: center; /* Center children horizontally */
             align-items: center; /* Center children vertically */
-            height: 40vh; /* Full height of the viewport */
-            padding: 20px; /* Optional: to avoid the textarea touching the edges */
+            height: ; /* Full height of the viewport */
+            padding: 10px; /* Optional: to avoid the textarea touching the edges */
         }
-
-        .home-button {
-            display: inline-block;
-            width: 20%;
-            margin: 5px;
-            padding: 10px;
-            background-color: #ADD8E6;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        #start_date,
+        #end_date,
+        #cityStateInput {
+            /* Your existing styling properties */
+            font-family: 'Kanit', sans-serif;
         }
 
 
@@ -212,9 +196,39 @@
             padding: 10px 40px;
             color: #fff;
         }
+        #start_date,
+        #end_date {
+            width: 20%; /* Adjust to suit your layout */
+            padding: 12px 20px; /* Adjust the padding to increase the input's height and make it look more substantial */
+            margin: 8px 0; /* Provides space around the input */
+            display: block; /* Makes it easier to style and position */
+            border: 1px solid #ccc; /* Gives a light border */
+            border-radius: 4px; /* Rounds the corners of the input box */
+            box-sizing: border-box; /* Makes sure padding doesn't affect the overall width */
+            font-size: 16px; /* Increases the font size for better readability */
+            background-color: white; /* Gives a background color */
+            color: #555; /* Sets the text color */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optionally adds a subtle shadow to lift the input off the page */
+            transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition for focus effect */
+        }
+
+            #start_date:focus,
+            #end_date:focus {
+                outline: none; /* Removes the default focus outline */
+                border-color: #4A90E2; /* Changes the border color to a blue when the input is focused */
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Optionally makes the shadow more pronounced when focused */
+            }
+        .date-input-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
     </style>
 </head>
 <body>
+
     <nav align="center">
         <ul>
             <li><a href="/landing">Home</a></li>
@@ -223,38 +237,46 @@
         </ul>
     </nav>
 
-    <header>
-        <h1 class="header-title">Let's build your itinerary</h1>
-    <h1 style="text-align: center; color: #ffffff;">Enter a City</h1>
-    </header>
+    <h1 class="header-title">Let's build your itinerary</h1><br>
+    <h1 style="text-align: center; font-family: 'Times New Roman', Times, serif; color: #ffffff;">Enter a City</h1>
+    <form style="text-align: center;" action="{% url 'landing' %}" method=post>
+        {% csrf_token %}
 
-    <main>
-        <form action="{% url 'landing' %}" method="post">
-            {% csrf_token %}
-            <div class="search-container">
-                <input type="text" name="cityStateInput" id="cityStateInput" placeholder="ex. City, State">
-                {% if error_message %}
-                    <div id="error-message" class="error-message">
-                        {{ error_message }}
-                    </div>
-                {% endif %}
-                <ul id="cityList"></ul>
-            </div>
-
-            <div class="date-container">
-                <label for="start_date">Start Date:</label>
+        <div class="search-container">
+            <input type="text" name="cityStateInput" id="cityStateInput" placeholder="ex. City, State">
+            {% if error_message %}
+                <div id="error-message" class="error-message">
+                    {{ error_message }}
+                </div>
+            {% endif %}
+            <ul id="cityList"></ul>
+        </div>
+        <br><br>
+            <div class="date-input-container">
+                <label for="start_date" style="color: #ffffff;">Start Date:</label> &nbsp;&nbsp;
                 <input type="date" id="start_date" name="start_date">
 
-                <label for="end_date">End Date:</label>
+                <label for="end_date" style="color: #ffffff; margin-left: 20px;">End Date:</label> &nbsp;&nbsp;
                 <input type="date" id="end_date" name="end_date">
             </div>
 
-            <div class="submit-button-container">
-                <button type="submit">Search</button>
-            </div>
-        </form>
-    </main>
-    
+
+
+
+        <div class="form-container">
+            <form action="/submit-form" method="post">
+                <!--<h1 style="text-align: center; color: #ffffff;">Type a recommendation</h1>-->
+                <!-- Create a large textarea for multi-line text input -->
+                <!--<textarea name="largeText" class="large-textarea" placeholder="Enter your text here"></textarea>-->
+                <!-- Container to center the submit button -->
+                <div>
+                    <br>
+                    <button class="submit-button" type="submit">Search</button><br> <br>
+                </div>
+            </form>
+        </div>
+
+    </form>
     <script src="{% static 'trips/search.js' %}"></script>
     <script>
         // Wait for the page to load

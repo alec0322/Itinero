@@ -3,8 +3,8 @@ from django.db.models import F, Value, functions
 from django.db.models.functions import Concat
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import City, State, Itinerary, Location, Trips
-# from .itinero_model import CrimeClassifier
 from .scripts.place_recommender import recommendPlace
+
 
 
 def recommend_view(request):

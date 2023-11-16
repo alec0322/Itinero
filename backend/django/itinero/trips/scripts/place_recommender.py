@@ -7,12 +7,13 @@ import json
 
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
-def recommendPlace(location, sentence, distance):
+def recommendPlace(location, sentence, distance, trip_days):
     embeddings1 = model.encode(sentence)
     placesSearched = getNearbyPlaces(location, sentence, "", distance)
     scoredPlaces = []
-
-    for i, place in itertools.islice(enumerate(placesSearched), 15):
+    return_size = 3 * trip_days
+    
+    for i, place in itertools.islice(enumerate(placesSearched), return_size):
         reviews = getPlaceReviews(place["place_id"])
         reviewNum = 0
         averageScore = 0
@@ -24,8 +25,8 @@ def recommendPlace(location, sentence, distance):
                 reviewEmbeded = model.encode(review["text"])
                 averageScore += util.cos_sim(embeddings1, reviewEmbeded) # type: ignore
 
-        averageScore /= reviewNum
-        averageRating = totalRating / reviewNum if reviewNum > 0 else 0
+        averageScore /= reviewNum if reviewNum > 0 else 1
+        averageRating = totalRating / reviewNum if reviewNum > 0 else 1
         # Normalize the average score to a 1-5 scale
         normalizedScore = 1 + 4 * (averageScore + 1) / 2
         scoredPlace = {
@@ -48,7 +49,11 @@ def recommendPlace(location, sentence, distance):
             'average_rating': float(place['average_rating'])
         }
         np_scoredPlaces.append(np_place)
-
+    # print(sentence)
+    # print('\n')
+    # print(np_scoredPlaces)
+    # print('\n')
+    
     return np_scoredPlaces
 
 

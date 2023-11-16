@@ -3,12 +3,47 @@
 <head>
     <!-- Your head content here -->
     <style>
+        body {
+            background-color: cadetblue;
+            background-size: cover;
+            font-family: 'Kanit', sans-serif;
+            color: #ffffff;
+        }
+
+        .header-title {
+            font-family: 'Kanit', sans-serif;
+            font-size: 75px;
+        }
         .itinerary-container {
             display: flex;
             justify-content: space-between;
         }
+        .submit-button {
+            padding: 20px; /* How wide the button is */
+            border-radius: 30px; /* How round the border is */
+            display: inline-block;
+            width: 45%;
+            margin: 5px;
+            padding: 10px;
+            position: relative;
+            display: inline-table;
+            font-size: 14px; /* Font size */
+            font-family: 'Kanit', sans-serif;
+            background-color: purple;
+            border: none;
+            border-radius: 10px;
+            color: orange;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            margin: 10px 2px;
+            cursor: pointer;
+        }
 
         .itinerary-details {
+            margin-left: 50px;
             width: 30%;
         }
 
@@ -22,18 +57,6 @@
         .itinerary-navigation {
             width: 100%;
             text-align: right;
-        }
-
-        .itinerary-button {
-            display: inline-block;
-            width: 45%;
-            margin: 5px;
-            padding: 10px;
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
         }
 
         .home-button {
@@ -119,25 +142,35 @@
             <li><a href="/">Log Out</a></li>
         </ul>
     </nav>
-
+    
     <div class="itinerary-container">
         <div class="itinerary-details">
-            <h1>Itinerary for {{ itin.trip.city.name }}, {{ itin.trip.city.state.name }}</h1>
+            <h1>Itinerary for {{ trip.city|title }}</h1>
             <ul>
-                <li>Start Date: {{ itin.trip.firstDay }}</li>
-                <li>End Date: {{ itin.trip.lastDay }}</li>
+                <li>Start Date: {{ trip.firstDay }}</li>
+                <li>End Date: {{ trip.lastDay }}</li>
                 <br>
-                <li>Hotel: {{ itin.itinerary.hotel }}</li>
+                <li>Hotel: {{ itinerary.hotel }}</li>
+                <li>Crime Index: {{ trip.crimeIndex }}</li>
             </ul>
         </div>
 
         <div class="itinerary-day" id="day-container">
             <div class="day-box">
-                <h2 id="day-title">Day 1 - {{ itin.location.0.get_time_slot_display }}</h2>
+                <h2 id="day-title">Day 1 - {{ location.0.time_slot }}</h2>
                 <ul>
-                    {% for activity in itin.location.0.activity_set.all %}
-                        <li>{{ activity.time }} - {{ activity.activity }} at {{ activity.place }}</li>
+                    {% for loc in location %}
+                    <li><span style="font-size: larger; font-weight: bold;">{{ loc.activity }}</span> - {{ loc.name }}</li>
+                    <br>
+                    <ul>
+                        <li>Address {{ loc.address }}</li>
+                        <li>Rating {{ loc.rating|floatformat:2 }}</li>
+                    </ul>
+                    <br>
                     {% endfor %}
+                    {% comment %} {% for activity in itin.location.0.activity.all %}
+                        <li>{{ activity.time }} - {{ activity.activity }} at {{ activity.place }}</li>
+                    {% endfor %} {% endcomment %}
                 </ul>
             </div>
         </div>
@@ -149,53 +182,71 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const previousDayButton = document.getElementById("previous-day");
-            const nextDayButton = document.getElementById("next-day");
-            const dayContainer = document.getElementById("day-container");
+        var itin = {{ itin|safe }};
+            // JavaScript code
+            document.addEventListener("DOMContentLoaded", function () {
+                // Get the "Previous Day" and "Next Day" buttons
+                const previousDayButton = document.getElementById("previous-day");
+                const nextDayButton = document.getElementById("next-day");
     
-            let currentDay = 1;
-            let currentDate = new Date("{{ itin.trip.firstDay }}");
-            const lastDay = new Date("{{ itin.trip.lastDay }}");
+                console.log("Breakfast Locations:", breakfastLocations);
     
-            document.querySelector("#day-title").textContent = `Day ${currentDay} - ${currentDate.toDateString()}`;
+                // Check if breakfastLocations has any elements
+                if (breakfastLocations.length > 0) {
+                    console.log("First Breakfast Location:", breakfastLocations[0]);
+                } else {
+                    console.log("No Breakfast Locations found.");
+                }
     
-            previousDayButton.addEventListener("click", function () {
-                if (currentDay > 1 && currentDate > new Date("{{ itin.trip.firstDay }}")) {
-                    currentDate.setDate(currentDate.getDate() - 1);
+                // Set the initial day (Day 1)
+                let currentDay = 1;
+                let currentDate = new Date("{{ trip.firstDay }}");
+                document.querySelector("#day-title").textContent = `Day ${currentDay} - ${currentDate.toDateString()}`;
+                /*let firstActivity = null;
+                for (let i = 0; i < breakfastLocations.length; i++) {
+                    const location = breakfastLocations[i];
+    
+                    // Check if the location's itinerary date matches trip.firstDay
+                    if (location.itinerary.date === "{{ trip.firstDay }}") {
+                        firstActivity = location;
+                        break; // Exit the loop if a matching location is found
+                    }
+                }
+    
+                // Check if the firstActivity is found
+                if (firstActivity !== null) {
+                    document.querySelector("#1breakfast").textContent = `Breakfast: ${firstActivity.name}`;
+                } else {
+                    document.querySelector("#1breakfast").textContent = "No breakfast activity";
+                }*/
+    
+                //first day so you can not click on previous day, only next
+                document.getElementById("previous-day").disabled = true;
+                document.getElementById("next-day").disabled = false;
+    
+                // Event listener for "Previous Day" button
+                previousDayButton.addEventListener("click", function () {
+                    document.getElementById("next-day").disabled = false;
+                    currentDate.setDate(currentDate.getDate() - 1); // Actualiza la fecha antes de usarla
                     currentDay--;
-                    showDay(currentDay);
-                }
-            });
+                    document.querySelector("#day-title").textContent = `Day ${currentDay} - ${currentDate.toDateString()}`;
+                    if (currentDate.getTime() === new Date("{{ trip.firstDay }}").getTime()) {
+                        document.getElementById("previous-day").disabled = true;
+                    }
+                });
     
-            nextDayButton.addEventListener("click", function () {
-                if (currentDay < itin.location.length && currentDate < lastDay) {
-                    currentDate.setDate(currentDate.getDate() + 1);
+                // Event listener for "Next Day" button
+                nextDayButton.addEventListener("click", function () {
+                    document.getElementById("previous-day").disabled = false;
+                    currentDate.setDate(currentDate.getDate() + 1); // Actualiza la fecha antes de usarla
                     currentDay++;
-                    showDay(currentDay);
-                }
+                    document.querySelector("#day-title").textContent = `Day ${currentDay} - ${currentDate.toDateString()}`;
+                    if (currentDate.getTime() === new Date("{{ trip.lastDay }}").getTime()) {
+                        document.getElementById("next-day").disabled = true;
+                    }
+                });
             });
-    
-            function showDay(day) {
-                document.querySelector("#day-title").textContent = `Day ${day} - ${currentDate.toDateString()}`;
-                dayContainer.innerHTML = `
-                    <div class="day-box">
-                        <h2 id="day-title">Day ${day} - ${itin.location[day - 1].get_time_slot_display()}</h2>
-                        <ul>
-                            ${itin.location[day - 1].activity_set.all().map(activity => `
-                                <li>${activity.time} - ${activity.activity} at ${activity.place}</li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                `;
-    
-                previousDayButton.disabled = currentDay === 1 || currentDate <= new Date("{{ itin.trip.firstDay }}");
-                nextDayButton.disabled = currentDay === itin.location.length || currentDate >= lastDay;
-            }
-    
-            showDay(currentDay);
-        });
-    </script>
+        </script>
     
     
     

@@ -1,11 +1,11 @@
 import requests
 import datetime
-
+from .API_KEYS import NEWS_API_KEY
 class NewsAPI:
 
     # NewsAPI Constructor
     def __init__(self):
-        self.api_key = " " #Insert API Key
+        self.api_key = NEWS_API_KEY #Insert API Key
         self.base_url = 'https://newsapi.org/v2/'
 
     def make_api_request(self, endpoint):

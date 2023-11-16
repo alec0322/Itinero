@@ -1,7 +1,8 @@
 import torch
 import os
 import random
-from backend.django.itinero.trips.scripts.news_data_fetcher import NewsAPI
+# from backend.django.itinero.trips.scripts.news_data_fetcher import NewsAPI
+from .news_data_fetcher import NewsAPI
 from torch.utils.data import DataLoader, TensorDataset
 from transformers import BertForSequenceClassification, BertTokenizer, AdamW
 
@@ -163,7 +164,7 @@ class CrimeClassifier:
 
         classified_city_articles = self.classify_articles(city_articles)
 
-        print(classified_city_articles)
+        # print(classified_city_articles)
 
         crime_related = len(classified_city_articles["Crime-related"])
         not_crime_related = len(classified_city_articles["Not crime-related"])
@@ -171,4 +172,11 @@ class CrimeClassifier:
         crime_index = crime_related / (crime_related + not_crime_related)
 
         return crime_index
-    
+
+
+# crime_rater = CrimeClassifier()
+
+# city = "miami"
+# crime_index = crime_rater.calculate_crime_index(city)
+
+# print(f"{city} has a crime index of {crime_index}")

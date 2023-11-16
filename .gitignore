@@ -7,3 +7,5 @@ backend/venv/
 .vs
 .vscode
 .python-version
+backend/django/itinero/trips/scripts/API_KEYS.py
+backend/users/templates/users

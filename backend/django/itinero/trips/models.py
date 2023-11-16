@@ -26,12 +26,14 @@ class Trips(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     firstDay = models.DateField()
     lastDay = models.DateField()
-
+    crimeIndex = models.FloatField()
+    # crimeIndex = models.DecimalField(max_digits=4, decimal_places=3)
+    
     def __str__(self):
         return f"{self.typeOfTrip} Trip to {self.city.name}"
 
 class Itinerary(models.Model):
-    trip = models.ForeignKey(Trips, on_delete=models.CASCADE)
+    trip = models.ForeignKey(Trips, on_delete=models.CASCADE, related_name='itinerary')
     hotel_list = models.TextField()
     hotel = models.CharField(max_length=250) #need to change to only hold the index of the list of places
     
@@ -51,13 +53,16 @@ class Location(models.Model):
     )
 
     name = models.CharField(max_length=150)
-    itinerary = models.ForeignKey(Itinerary, on_delete=models.CASCADE)
+    address = models.CharField(max_length=100)
+    rating = models.FloatField()
+    itinerary = models.ForeignKey(Itinerary, on_delete=models.CASCADE, related_name='location')
     date = models.DateField()
     time_slot = models.CharField(max_length=50, choices=TIME_SLOT_CHOICES)
     activity = models.CharField(max_length=100)
     search_keyword = models.CharField(max_length=150, default='')
-    place = models.CharField(max_length=200)  # or models.ForeignKey(Place, on_delete=models.CASCADE)
+    place = models.CharField(max_length=200)
     place_list = models.TextField()  # or models.ManyToManyField(Place)
+    
     
     def set_places(self, place_list):
         self.place_list = json.dumps(place_list)
